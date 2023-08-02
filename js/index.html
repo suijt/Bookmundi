@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookmundi Custom JS Library</title>
+  </head>
+  <style>
+    .oldClass {
+      background: #a9ffc8;
+    }
+    .newClass {
+      background: #3eb368;
+    }
+  </style>
+  <body>
+    <div
+      id="main"
+      class="oldClass"
+      data-info="bookmundi"
+      data-description="Book your hotel"
+    >
+      +15000 tours and trip packages in +135 countries. We offer group tours,
+      private tours, cruise tours & 100% personalized trip itineraries.
+    </div>
+    <input type="text" id="searchInput" value="Search Input" />
+    <input type="checkbox" id="isChecked" />
+    <select id="destination">
+      <option value="dubai">Dubai</option>
+      <option value="malayasia">Malayasia</option>
+      <option value="switzerland">Switzerland</option>
+    </select>
+
+    <button id="changeClassBtn">Change Class</button>
+    <button id="getDatasetBtn">Get Dataset</button>
+    <button id="newElement">Append Element</button>
+    <button id="getRequestBtn">GET Request</button>
+    <button id="postRequestBtn">POST Request</button>
+    <button id="getValueBtn">Get Value</button>
+    <button id="setValueBtn">Set Value</button>
+
+    <script src="bookmundi.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var searchInput = document.getElementById("searchInput");
+        var isChecked = document.getElementById("isChecked");
+        var destination = document.getElementById("destination");
+        var mainElement = document.getElementById("main");
+
+        //Change Class of the main element
+        document
+          .getElementById("changeClassBtn")
+          .addEventListener("click", function () {
+            var newClass = Bookmundi.changeClass(mainElement, "newClass");
+          });
+
+        //Get Datasets from the main element
+        document
+          .getElementById("getDatasetBtn")
+          .addEventListener("click", function () {
+            var dataset = Bookmundi.getDataset(mainElement);
+            console.log(dataset);
+          });
+
+        //Append new div after the main Element
+        document
+          .getElementById("newElement")
+          .addEventListener("click", function () {
+            var newElement = document.createElement("div");
+            newElement.textContent = "Book Now !!!";
+            Bookmundi.injectElement(mainElement, newElement);
+          });
+
+        //Make a GET request from AJAX
+        document
+          .getElementById("getRequestBtn")
+          .addEventListener("click", function () {
+            Bookmundi.getRequest(
+              "https://jsonplaceholder.typicode.com/posts/1",
+              function (response) {
+                console.log(response);
+              }
+            );
+          });
+
+        //Make 3 POST request from AJAX simultaneously using promise
+        document
+          .getElementById("postRequestBtn")
+          .addEventListener("click", function () {
+            var postData1 = { key: "value1" };
+            var postData2 = { key: "value2" };
+            var postData3 = { key: "value3" };
+
+            var promise1 = new Promise(function (resolve, reject) {
+              Bookmundi.postRequest(
+                "https://jsonplaceholder.typicode.com/posts",
+                postData1,
+                resolve
+              );
+            });
+
+            var promise2 = new Promise(function (resolve, reject) {
+              Bookmundi.postRequest(
+                "https://jsonplaceholder.typicode.com/posts",
+                postData2,
+                resolve
+              );
+            });
+
+            var promise3 = new Promise(function (resolve, reject) {
+              Bookmundi.postRequest(
+                "https://jsonplaceholder.typicode.com/posts",
+                postData3,
+                resolve
+              );
+            });
+
+            Promise.all([promise1, promise2, promise3])
+              .then(function (results) {
+                console.log("All POST requests resolved:", results);
+              })
+              .catch(function (error) {
+                console.error("Error in POST requests:", error);
+              });
+          });
+
+        //Get the values of all three inputs and display
+        document
+          .getElementById("getValueBtn")
+          .addEventListener("click", function () {
+            var inputValue = Bookmundi.getValue(searchInput);
+            var checkboxValue = Bookmundi.getCheckboxValue(isChecked);
+            var selectValue = Bookmundi.getSelectValue(destination);
+
+            console.log("Input Value:", inputValue);
+            console.log("Checkbox Value:", checkboxValue);
+            console.log("Select Value:", selectValue);
+          });
+
+        //Set the values of all three inputs
+        document
+          .getElementById("setValueBtn")
+          .addEventListener("click", function () {
+            Bookmundi.setValue(searchInput, "New Input Value");
+            Bookmundi.setCheckboxValue(isChecked, true);
+            Bookmundi.setSelectValue(destination, "option3");
+          });
+      });
+    </script>
+  </body>
+</html>
